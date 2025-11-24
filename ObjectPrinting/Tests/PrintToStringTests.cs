@@ -39,12 +39,12 @@ namespace ObjectPrinting.Tests
             var person = new Person { Id = Guid.NewGuid(), Name = "Петя", Height = 1.82, Age = 19 };
             string s = ObjectPrinter.For<Person>().PrintToString(person);
 
-            s.Should().Contain("Person");
-            s.Should().Contain("Name");
-            s.Should().Contain("Age");
-            s.Should().Contain("Height");
-            s.Should().Contain("Петя");
-            s.Should().Contain("19");
+            s.Should().Contain(nameof(Person));
+            s.Should().Contain(nameof(Person.Name));
+            s.Should().Contain(nameof(Person.Age));
+            s.Should().Contain(nameof(Person.Height));
+            s.Should().Contain(person.Name);
+            s.Should().Contain(person.Age.ToString());
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace ObjectPrinting.Tests
         {
             var person = new Person { Name = "X", Age = 255 };
             var printer = ObjectPrinter.For<Person>()
-                .Printing<int>().Using(i => i.ToString("X")); 
+                .Printing<int>().Using(i => i.ToString("X"));
 
             string s = printer.PrintToString(person);
 
@@ -92,7 +92,7 @@ namespace ObjectPrinting.Tests
 
             string s = printer.PrintToString(person);
 
-            s.Should().Contain("<Петя>");
+            s.Should().Contain($"<{person.Name}>");
         }
 
         [Test]
@@ -104,8 +104,8 @@ namespace ObjectPrinting.Tests
 
             string s = printer.PrintToString(person);
 
-            s.Should().Contain("Вас");
-            s.Should().NotContain("Васи");
+            s.Should().Contain(person.Name.Substring(0, 3));
+            s.Should().NotContain(person.Name.Substring(0, 4));
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace ObjectPrinting.Tests
 
             string s = printer.PrintToString(person);
 
-            s.Should().NotContain("77");
+            s.Should().NotContain(person.Age.ToString());
         }
 
         [Test]
@@ -130,8 +130,8 @@ namespace ObjectPrinting.Tests
 
             string s = ObjectPrinter.For<Node>().PrintToString(a);
 
-            s.Should().Contain("A");
-            s.Should().Contain("B");
+            s.Should().Contain(a.Name);
+            s.Should().Contain(b.Name);
             s.Should().MatchRegex("(?i).*Циклическая.*");
         }
 
@@ -147,12 +147,13 @@ namespace ObjectPrinting.Tests
 
             string s = ObjectPrinter.For<Container>().PrintToString(container);
 
-            s.Should().Contain("Numbers");
+            s.Should().Contain(nameof(Container));
+            s.Should().Contain(nameof(Container.Numbers));
             s.Should().Contain("[0]");
             s.Should().Contain("1");
-            s.Should().Contain("List");
+            s.Should().Contain(nameof(Container.List));
             s.Should().Contain("x");
-            s.Should().Contain("Map");
+            s.Should().Contain(nameof(Container.Map));
             s.Should().Contain("Key");
             s.Should().Contain("Value");
             s.Should().Contain("k");
