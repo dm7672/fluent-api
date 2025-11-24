@@ -79,7 +79,7 @@ namespace ObjectPrinting
         }
         public string PrintToString(TOwner obj)
         {
-            return Serializer.Serialize(obj, this);
+            return new Serializer<TOwner>(this).Serialize(obj);
         }
         private static MemberInfo GetMemberInfo<TPropType>(Expression<Func<TOwner, TPropType>> memberSelector)
         {
